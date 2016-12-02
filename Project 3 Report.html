@@ -1,0 +1,192 @@
+<html>
+<head>
+<title> CS440/640 Homework Template: HW[x] Student Name [xxx]  </title>
+<style>
+<!--
+body{
+font-family: 'Trebuchet MS', Verdana;
+}
+p{
+font-family: 'Trebuchet MS', Times;
+margin: 10px 10px 15px 20px;
+}
+h3{
+margin: 5px;
+}
+h2{
+margin: 10px;
+}
+h1{
+margin: 10px 0px 0px 20px;
+}
+div.main-body{
+align:center;
+margin: 30px;
+}
+hr{
+margin:20px 0px 20px 0px;
+}
+-->
+</style>
+</head>
+
+<body>
+<center>
+<a href="http://www.bu.edu"><img border="0" src="http://www.cs.bu.edu/fac/betke/images/bu-logo.gif"
+width="119" height="120"></a>
+</center>
+
+<h1>Project 3</h1>
+<p> 
+ Course name: CS440/640<br>
+ Project 3<br>
+ Name: Omayr Abdelgany<br>
+ Team members: Chang Gao, Lai Wei, Shirui Ye<br>
+ Team name: Nope <br>
+ Due Date: 04.05.16 
+</p>
+
+<div class="main-body">
+<hr>
+<h2> Problem Definition </h2>
+<p>
+For this project, we apply Hidden Markov Models to the problem of Natural Language Processing. 
+The project requires us to build a basic English sentence recognizer and a non complex Hidden Markov Model.
+The vocabulary that we are limited to exclusively employs the words "kids", "robots", "do", "can", "play", "eat", "chess", and "food".
+The HMM we implement is expected to recognize and parse sentences. In addition, the HMM we implement handles various recognition tasks.
+</p>
+
+<hr>
+<h2> Method and Implementation </h2>
+<p>
+In this project we implement three main algorithms. The forward algorithm, the backward algorithm and the Viterbi algorithm.
+Our program is based on the concepts found in L. R. Rabiner's A Tutorial on Hidden Markov Models and Selected Applications 
+in Speech Recognition, Proceedings of the IEEE, 77(2), pp. 257-286, 1989. We use the algorithms in this article
+article and convert them into our own code and implement them in our program.
+</p>
+<p>
+As per instruction, we implement three scripts:<br>
+1. recognize.py: Implements the "forward part" of the forward/backward procedure discussed in class. Given the HMM and several observation sequences, recognize.py reports the observation probability of each input sequence. <br>
+2. statepath.py: Each line again corresponds to a data set:  In this case, the program outputs the "optimal" state path, i.e., the path with the highest 
+probability P(O, I | lambda) and, if the probability is greater than zero, the state sequence.<br>
+3. optimize:This program optimizes the HMM using one iteration of the Baum-Welch algorithm.  After all data sets are processed, optimize saves the optimized
+ HMMs in a new file as specified by the command-line argument. <br>
+</p>
+
+<hr>
+<h2> My Contribution </h2>
+<p>
+In this project I implemented a lot of the formatting of the data sets to prep them for the implementation of the algorithms. This includes extraction of the information from the .hmm and .obs files, as well as the editing
+of that information so that it would work with out program. I also worked on formatting our files back and forth from in-shell function calls to command line argument calls as is required in the assignment. Additionally,
+I assisted in the implementation of the Forward algorithm in recognize.py and the Viterbi algorithm in statepath.py
+</p>
+
+<hr>
+<h2> Discussion and Answers to the questions</h2>
+<p> 
+<ul>
+<li> Q1. For the current application, why does this probability seem lower than we expect? What does this probability tell you? Does the current HMM always give a reasonable answer? For instance, what is the output probability for the below sentence?
+
+"robots do kids play chess"
+"chess eat play kids"
+You may want to use different observation data to justify your answer.<br>
+<br>
+The probability is lower than we expected because we did not take into account the fact that there are so many other paths that have 0 chance of occurring (Most of the values in the b matrix are 0). <br>
+These paths take up a very large amount of the total paths that can be created, so each valid path only has a small chance of occurring. <br>
+As long as the probability is greater than 0, the HMM considers the sentence as valid, and thus does not always give a reasonable answer. <br>
+
+Take for example the output probabilities for the following sentences:<br>
+<br>
+"robots do kids play chess"<br>
+
+Probability: 0.0015119<br>
+<br>
+"chess eat play kids"<br>
+
+Probability: 0.0<br>
+<br>
+The reason why the HMM takes the sentence "robots do kids play chess" as valid is because it takes "robots do" and "do kids play chess" as valid, without actually realizing that it is a combination of the two valid sentences. You can prove this by combining other valid sentences such as "kids can" and "kids play chess" into:<br>
+
+"kids can kids play chess"<br>
+
+Probability: 0.0018899<br>
+<br>
+This sentence is not valid yet the probability is still greater than 0.<br>
+</li>
+&nbsp
+<li> Q2. What can we tell from the reported optimal path for syntax analysis purpose? Can the HMM always correctly distinguish "statement" from "question" sentence? Why?<br>
+<br>
+With the reported optimal path, we can determine that the most likely way that the sentence was constructed was with the reported sentence structures. This gives us the structure of the sentence.The HMM can not always distinguish between statement and question because the nouns "kids", "robots", "chess", and "food" all have the possibility of being both a subject and an object. For instance, "Robots do play" is a statement and "Do robots play" is a question, but our HMM cannot tell the difference.</li>
+&nbsp
+<li> Q3. Why should you not try to optimize an HMM with zero observation probability?<br>
+<br>
+There is no point in optimizing an HMM with zero observation probability because it is already marked as a sentence that is not likely to occur. You do not need to optimize such a sentence because the goal of the HMM is to create a valid sentence (one with non-zero observation probability), not an invalid one. </li>
+&nbsp
+<li> Q4. What kinds of changes will you need to make in the above HMM? Please describe your solution with an example of the modified matrices a, b and pi in the submitted web page. <br>
+<br>
+Another state would need to be added after the 4th state. Thus, you need to update the values of a, b and pi, expanding the matrixes and array.<br>
+5 10 5<br>
+
+SUBJECT AUXILIARY PREDICATE OBJECT ADVERB<br>
+
+kids robots do can play eat chess food well fast<br>
+
+a:<br>
+
+0.0 0.4 0.6 0.0 0.0<br>
+
+0.7 0.0 0.3 0.0 0.0<br>
+
+0.0 0.0 0.0 0.5 0.5<br>
+
+0.0 0.0 0.0 0.0 1.0<br>
+
+0.0 0.0 0.0 0.0 0.0<br>
+
+b:<br>
+
+0.5 0.4 0.0 0.0 0.0 0.0 0.05 0.05 0.0 0.0<br>
+
+0.0 0.0 0.5 0.5 0.0 0.0 0.0 0.0 0.0 0.0<br>
+
+0.0 0.0 0.0 0.0 0.5 0.5 0.0 0.0 0.0 0.0<br>
+
+0.1 0.2 0.0 0.0 0.0 0.0 0.3 0.4 0.0 0.0<br>
+
+0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.5 0.5<br>
+
+pi:<br>
+
+0.6 0.3 0.1 0.0 0.0<br>
+</li>
+</ul>
+</p>
+
+<hr>
+<h2> Conclusions </h2>
+
+<p>
+For the first two parts, recognize.py and statepath.py, our program works perfectly on 
+both examples and should work for any other examples of the same format. As for optimize.py,
+our program sometimes returns an inaccurate result, but overall we believe the program performs 
+fairly well. We successfully completed the forward-backward algorithm and Viterbi algorithm for
+recognize.py and statepath.py, but some mistakes may have taken place in our implementation of
+the Baum-Welch algorithm.
+</p>
+
+
+<hr>
+<h2> Credits and Bibliography </h2>
+<p>
+L. R. Rabiner. A Tutorial on Hidden Markov Models and Selected Applications in Speech Recognition, Proceedings of the IEEE, 77(2), pp. 257-286, 1989.  pdf. 
+</p>
+
+<p>
+Work with Lai Wei, Omayr Abdelgany, Shirui Ye, Chang Gao
+</p>
+<hr>
+</div>
+</body>
+
+
+</html>
